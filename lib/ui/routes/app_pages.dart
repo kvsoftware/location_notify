@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
 
-import '../page/search_location/search_location_binding.dart';
-import '../page/search_location/search_location_view.dart';
 import '../page/home/home_binding.dart';
 import '../page/home/home_view.dart';
 import '../page/map/map_binding.dart';
 import '../page/map/map_view.dart';
 import '../page/notify_detail/notify_detail_binding.dart';
 import '../page/notify_detail/notify_detail_view.dart';
+import '../page/search_location/search_location_binding.dart';
+import '../page/search_location/search_location_view.dart';
 
 part 'app_routes.dart';
 

@@ -1,4 +1,4 @@
-import 'package:location_notify/domain/entity/address_entity.dart';
+import '../entity/address_entity.dart';
 
 import '../../data/repository/map_repository.dart';
 

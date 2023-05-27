@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../mapper/address_view_model_mapper.dart';
-import '../../view_model/address_view_model.dart';
 
 import '../../../domain/use_case/search_address_by_keyword_use_case.dart';
 import '../../base_controller.dart';
+import '../../mapper/address_view_model_mapper.dart';
+import '../../view_model/address_view_model.dart';
 
 class SearchLocationController extends BaseController {
   final SearchAddressByKeywordUseCase _searchAddressByKeywordUseCase;

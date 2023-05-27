@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../generated/locales.g.dart';
 import '../../base_view.dart';
 import '../../routes/app_pages.dart';
-import '../../view_model/address_view_model.dart';
 import 'map_controller.dart';
 
 class MapViewArgument {

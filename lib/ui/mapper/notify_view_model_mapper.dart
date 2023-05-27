@@ -7,6 +7,9 @@ extension NotifyEntityMapper on NotifyEntity {
       id: id ?? 0,
       name: name,
       address: address,
+      latitude: latitude,
+      longitude: longitude,
+      radius: radius,
       isEnabled: isEnabled,
     );
   }
