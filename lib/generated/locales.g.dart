@@ -25,6 +25,13 @@ class LocaleKeys {
       'notify_detail_dialog_delete_notify_title';
   static const notify_detail_dialog_delete_notify_message =
       'notify_detail_dialog_delete_notify_message';
+  static const map_title = 'map_title';
+  static const map_button_select_address = 'map_button_select_address';
+  static const search_location_title = 'search_location_title';
+  static const search_location_textfield_search_hint =
+      'search_location_textfield_search_hint';
+  static const search_location_text_not_found =
+      'search_location_text_not_found';
 }
 
 class Locales {
@@ -41,5 +48,10 @@ class Locales {
     'notify_detail_dialog_delete_notify_title': 'Delete confirmation',
     'notify_detail_dialog_delete_notify_message':
         'Are you sure to delete this notify?',
+    'map_title': 'Search location',
+    'map_button_select_address': 'Select this address',
+    'search_location_title': 'Search location',
+    'search_location_textfield_search_hint': 'Search...',
+    'search_location_text_not_found': 'No data.',
   };
 }

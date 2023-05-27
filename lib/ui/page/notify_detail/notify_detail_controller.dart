@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location_notify/ui/view_model/address_view_model.dart';
 
 import '../../../domain/use_case/delete_notify_by_id_use_case.dart';
 import '../../../domain/use_case/get_notify_by_id_use_case.dart';
@@ -20,8 +21,9 @@ class NotifyDetailController extends BaseController {
   final textEditingcontroller = TextEditingController();
   final markers = <Marker>[].obs;
   final circles = <Circle>[].obs;
-
   final notifyDetail = Rxn<NotifyDetailViewModel>();
+
+  late GoogleMapController _googleMapController;
 
   @override
   void onReady() {
@@ -46,6 +48,14 @@ class NotifyDetailController extends BaseController {
     this.circles([notifyDetail.toCircle()]);
     this.notifyDetail(notifyDetail);
     textEditingcontroller.text = notifyDetail.name;
+    _googleMapController.moveCamera(CameraUpdate.newLatLngZoom(
+      LatLng(notifyDetail.latitude, notifyDetail.longitude),
+      16,
+    ));
+  }
+
+  onMapCreated(GoogleMapController controller) {
+    _googleMapController = controller;
   }
 
   updateNotifyName(String name) async {
@@ -77,6 +87,23 @@ class NotifyDetailController extends BaseController {
       latitude: notifyViewModel.latitude,
       longitude: notifyViewModel.longitude,
       radius: double.parse(radius),
+      isEnabled: notifyViewModel.isEnabled,
+    );
+    _renderNotify(newNotifyDetail);
+  }
+
+  updateNotifyAddress(AddressViewModel addressViewModel) async {
+    final notifyViewModel = notifyDetail.value;
+    if (notifyViewModel == null) {
+      return;
+    }
+    var newNotifyDetail = NotifyDetailViewModel(
+      id: notifyViewModel.id,
+      name: notifyViewModel.name,
+      address: addressViewModel.displayName,
+      latitude: addressViewModel.latitude,
+      longitude: addressViewModel.longitude,
+      radius: notifyViewModel.radius,
       isEnabled: notifyViewModel.isEnabled,
     );
     _renderNotify(newNotifyDetail);

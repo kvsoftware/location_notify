@@ -4,7 +4,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../generated/locales.g.dart';
 import '../../base_view.dart';
+import '../../routes/app_pages.dart';
 import '../../view_model/notify_detail_view_model.dart';
+import '../map/map_view.dart';
 import 'notify_detail_controller.dart';
 
 class NotifyDetailArgument {
@@ -73,13 +75,23 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
             mapToolbarEnabled: false,
             zoomControlsEnabled: false,
             myLocationButtonEnabled: false,
+            onMapCreated: (controller) => this.controller.onMapCreated(controller),
           ),
           Align(
             alignment: Alignment.topRight,
             child: Container(
               margin: const EdgeInsets.fromLTRB(0, 16, 16, 0),
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final address = await Get.toNamed(
+                    Routes.MAP,
+                    arguments: MapViewArgument(
+                      notifyDetailViewModel.latitude,
+                      notifyDetailViewModel.longitude,
+                    ),
+                  );
+                  controller.updateNotifyAddress(address);
+                },
                 child: const Icon(Icons.edit_location_alt_outlined),
               ),
             ),

@@ -9,5 +9,10 @@
     "notify_detail_dialog_edit_name_title": "Edit name",
     "notify_detail_dialog_edit_radius_title": "Edit radius",
     "notify_detail_dialog_delete_notify_title": "Delete confirmation",
-    "notify_detail_dialog_delete_notify_message": "Are you sure to delete this notify?"
+    "notify_detail_dialog_delete_notify_message": "Are you sure to delete this notify?",
+    "map_title": "Search location",
+    "map_button_select_address": "Select this address",
+    "search_location_title": "Search location",
+    "search_location_textfield_search_hint": "Search...",
+    "search_location_text_not_found": "No data."
 }

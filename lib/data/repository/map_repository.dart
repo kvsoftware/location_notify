@@ -11,4 +11,9 @@ class MapRepository {
     final addressApiModel = await _mapRemoteDataSource.getAddressByLatLng(latitude: latitude, longitude: longitude);
     return addressApiModel.toAddressEntity();
   }
+
+  Future<List<AddressEntity>> searchByKeyword({required String keyword}) async {
+    final addressApiModel = await _mapRemoteDataSource.searchByKeyword(keyword: keyword);
+    return addressApiModel.map((e) => e.toAddressEntity()).toList();
+  }
 }

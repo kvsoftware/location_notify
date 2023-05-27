@@ -12,4 +12,8 @@ class MapRemoteDataSource {
   }) async {
     return _nominatimService.getAddressByLatLng(latitude: latitude, longitude: longitude);
   }
+
+  Future<List<AddressApiModel>> searchByKeyword({required String keyword}) async {
+    return _nominatimService.searchByKeyword(keyword: keyword);
+  }
 }

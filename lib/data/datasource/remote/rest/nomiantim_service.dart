@@ -15,4 +15,10 @@ abstract class NominatimService {
     @Query("lon") required double longitude,
     @Query("format") String format = 'json',
   });
+
+  @GET("https://nominatim.openstreetmap.org/search")
+  Future<List<AddressApiModel>> searchByKeyword({
+    @Query("q") required String keyword,
+    @Query("format") String format = 'json',
+  });
 }
