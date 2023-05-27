@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location_notify/ui/view_model/address_view_model.dart';
 
 import '../../../domain/use_case/delete_notify_by_id_use_case.dart';
 import '../../../domain/use_case/get_notify_by_id_use_case.dart';
 import '../../../domain/use_case/update_notify_use_case.dart';
 import '../../base_controller.dart';
 import '../../mapper/notify_detail_view_model_mapper.dart';
+import '../../view_model/address_view_model.dart';
 import '../../view_model/notify_detail_view_model.dart';
 import 'notify_detail_view.dart';
 
@@ -88,6 +88,23 @@ class NotifyDetailController extends BaseController {
       longitude: notifyViewModel.longitude,
       radius: double.parse(radius),
       isEnabled: notifyViewModel.isEnabled,
+    );
+    _renderNotify(newNotifyDetail);
+  }
+
+  updateStatus(bool isEnabled) async {
+    final notifyViewModel = notifyDetail.value;
+    if (notifyViewModel == null) {
+      return;
+    }
+    var newNotifyDetail = NotifyDetailViewModel(
+      id: notifyViewModel.id,
+      name: notifyViewModel.name,
+      address: notifyViewModel.address,
+      latitude: notifyViewModel.latitude,
+      longitude: notifyViewModel.longitude,
+      radius: notifyViewModel.radius,
+      isEnabled: isEnabled,
     );
     _renderNotify(newNotifyDetail);
   }

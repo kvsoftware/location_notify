@@ -49,6 +49,17 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
           title: Text("${notifyDetailViewModel.radius} ${LocaleKeys.notify_detail_text_metres.tr}"),
           onTap: () => _showDialogEditRadius(notifyDetailViewModel.radius),
         ),
+        CheckboxListTile(
+          title: Text(LocaleKeys.notify_detail_text_status.tr),
+          secondary: const Icon(Icons.toggle_off_outlined),
+          value: notifyDetailViewModel.isEnabled,
+          onChanged: (bool? value) {
+            if (value == null) {
+              return;
+            }
+            controller.updateStatus(value);
+          },
+        ),
         ListTile(
           minVerticalPadding: 0,
           leading: const Icon(Icons.delete_outlined),

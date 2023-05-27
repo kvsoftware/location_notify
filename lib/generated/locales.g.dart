@@ -16,6 +16,7 @@ class LocaleKeys {
   static const notify_detail_title = 'notify_detail_title';
   static const notify_detail_text_name_hint = 'notify_detail_text_name_hint';
   static const notify_detail_text_metres = 'notify_detail_text_metres';
+  static const notify_detail_text_status = 'notify_detail_text_status';
   static const notify_detail_text_delete = 'notify_detail_text_delete';
   static const notify_detail_dialog_edit_name_title =
       'notify_detail_dialog_edit_name_title';
@@ -39,9 +40,10 @@ class Locales {
     'global_ok': 'OK',
     'global_cancel': 'Cancel',
     'home_title': 'Location Notify',
-    'notify_detail_title': 'Notify Detail',
+    'notify_detail_title': 'Notify',
     'notify_detail_text_name_hint': 'Add name',
     'notify_detail_text_metres': 'Metres',
+    'notify_detail_text_status': 'Status',
     'notify_detail_text_delete': 'Delete',
     'notify_detail_dialog_edit_name_title': 'Edit name',
     'notify_detail_dialog_edit_radius_title': 'Edit radius',
