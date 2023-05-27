@@ -93,10 +93,10 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
     final textEditingController = TextEditingController();
     textEditingController.text = name;
     Get.defaultDialog(
-      title: LocaleKeys.notify_detail_dialog_delete_notify_title.tr,
+      title: LocaleKeys.notify_detail_dialog_edit_name_title.tr,
       content: TextField(controller: textEditingController),
-      textConfirm: LocaleKeys.notify_detail_dialog_delete_notify_button_ok.tr,
-      textCancel: LocaleKeys.notify_detail_dialog_delete_notify_button_cancel.tr,
+      textConfirm: LocaleKeys.global_ok.tr,
+      textCancel: LocaleKeys.global_cancel.tr,
       onConfirm: () {
         Get.back();
         controller.updateNotifyName(textEditingController.text);
@@ -108,10 +108,10 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
     final textEditingController = TextEditingController();
     textEditingController.text = radius.toString();
     Get.defaultDialog(
-      title: LocaleKeys.notify_detail_dialog_delete_notify_title.tr,
+      title: LocaleKeys.notify_detail_dialog_edit_radius_title.tr,
       content: TextField(controller: textEditingController, keyboardType: TextInputType.number),
-      textConfirm: LocaleKeys.notify_detail_dialog_delete_notify_button_ok.tr,
-      textCancel: LocaleKeys.notify_detail_dialog_delete_notify_button_cancel.tr,
+      textConfirm: LocaleKeys.global_ok.tr,
+      textCancel: LocaleKeys.global_cancel.tr,
       onConfirm: () {
         Get.back();
         controller.updateNotifyRadius(textEditingController.text);
@@ -123,8 +123,8 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
     Get.defaultDialog(
       title: LocaleKeys.notify_detail_dialog_delete_notify_title.tr,
       middleText: LocaleKeys.notify_detail_dialog_delete_notify_message.tr,
-      textConfirm: LocaleKeys.notify_detail_dialog_delete_notify_button_ok.tr,
-      textCancel: LocaleKeys.notify_detail_dialog_delete_notify_button_cancel.tr,
+      textConfirm: LocaleKeys.global_ok.tr,
+      textCancel: LocaleKeys.global_cancel.tr,
       onConfirm: () {
         Get.back();
         controller.deleteNotify();

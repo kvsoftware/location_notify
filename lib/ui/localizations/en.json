@@ -1,12 +1,13 @@
 {
-    "global_no_data": "No data",
+    "global_ok": "OK",
+    "global_cancel": "Cancel",
     "home_title": "Location Notify",
     "notify_detail_title": "Notify Detail",
     "notify_detail_text_name_hint": "Add name",
     "notify_detail_text_metres": "Metres",
     "notify_detail_text_delete": "Delete",
+    "notify_detail_dialog_edit_name_title": "Edit name",
+    "notify_detail_dialog_edit_radius_title": "Edit radius",
     "notify_detail_dialog_delete_notify_title": "Delete confirmation",
-    "notify_detail_dialog_delete_notify_message": "Are you sure to delete this notify?",
-    "notify_detail_dialog_delete_notify_button_ok": "OK",
-    "notify_detail_dialog_delete_notify_button_cancel": "Cancel"
+    "notify_detail_dialog_delete_notify_message": "Are you sure to delete this notify?"
 }
