@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 
 import '../../../generated/locales.g.dart';
 import '../../base_view.dart';
+import '../../routes/app_pages.dart';
 import '../../view_model/notify_view_model.dart';
+import '../notify_detail/notify_detail_view.dart';
 import 'home_controller.dart';
 
 class HomeView extends BaseView<HomeController> {
@@ -11,14 +13,13 @@ class HomeView extends BaseView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(LocaleKeys.home_title.tr), centerTitle: true),
-      body: Obx(
-        () => Stack(
-          children: [
-            _buildListView(context),
-            _buildCreateNotifyButton(),
-          ],
-        ),
+      appBar: AppBar(title: Text(LocaleKeys.home_title.tr)),
+      body: Obx(() => _buildListView(context)),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add_location_alt_outlined),
+        onPressed: () {
+          controller.addNotify();
+        },
       ),
     );
   }
@@ -27,7 +28,7 @@ class HomeView extends BaseView<HomeController> {
     return ListView.builder(
       itemCount: controller.notifies.length,
       itemBuilder: (context, index) {
-        return _buildItem(controller.notifies.value[index]);
+        return _buildItem(controller.notifies[index]);
       },
     );
   }
@@ -37,7 +38,9 @@ class HomeView extends BaseView<HomeController> {
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: InkWell(
         onTap: () {
-          // Do something
+          Get.toNamed(Routes.NOTIFY_DETAIL, arguments: NotifyDetailArgument(notifyViewModel.id))?.then((value) {
+            controller.getNotifies();
+          });
         },
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -70,25 +73,6 @@ class HomeView extends BaseView<HomeController> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCreateNotifyButton() {
-    return Align(
-      alignment: Alignment.bottomRight,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16, right: 16),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(16),
-          ),
-          onPressed: () {
-            controller.addNotify();
-          },
-          child: const Icon(Icons.alarm_add),
         ),
       ),
     );

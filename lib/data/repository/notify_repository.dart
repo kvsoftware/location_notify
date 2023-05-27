@@ -1,6 +1,4 @@
 import '../../domain/entity/notify_entity.dart';
-import '../../domain/mapper/notify_entity_mapper.dart';
-import '../datasource/local/model/notify_db_model.dart';
 import '../datasource/local/notify_local_data_source.dart';
 import '../mapper/notify_model_mapper.dart';
 
@@ -23,7 +21,11 @@ class NotifyRepository {
     return _notifyLocalDataSource.insertNotify(notifyEntity.toNotifyDbModel());
   }
 
-  Future<void> deleteNotify(NotifyDbModel notifyDbModel) {
-    return _notifyLocalDataSource.deleteNotify(notifyDbModel);
+  Future<void> updateNotify(NotifyEntity notifyEntity) {
+    return _notifyLocalDataSource.updateNotify(notifyEntity.toNotifyDbModel());
+  }
+
+  Future<void> deleteNotifyById({required int id}) {
+    return _notifyLocalDataSource.deleteNotifyById(id: id);
   }
 }

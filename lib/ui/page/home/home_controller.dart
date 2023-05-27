@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../../../domain/use_case/add_notify_use_case.dart';
 
+import '../../../domain/use_case/add_notify_use_case.dart';
 import '../../../domain/use_case/get_notifies_use_case.dart';
 import '../../base_controller.dart';
 import '../../mapper/notify_view_model_mapper.dart';
@@ -17,15 +17,15 @@ class HomeController extends BaseController {
   @override
   void onReady() {
     super.onReady();
-    _getNotifies();
+    getNotifies();
   }
 
   void addNotify() async {
     await _addNotifyUseCase.invoke();
-    _getNotifies();
+    getNotifies();
   }
 
-  void _getNotifies() async {
+  void getNotifies() async {
     final notifyEntities = await _getNotifiesUseCase.invoke();
     notifies(notifyEntities.map((e) => e.toNotifyViewModel()).toList());
   }

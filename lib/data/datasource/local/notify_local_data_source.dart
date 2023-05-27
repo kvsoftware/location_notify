@@ -18,7 +18,11 @@ class NotifyLocalDataSource {
     return _databaseModule.notifyDao.insertNotify(notifyDbModel);
   }
 
-  Future<void> deleteNotify(NotifyDbModel notifyDbModel) {
-    return _databaseModule.notifyDao.deleteNotify(notifyDbModel);
+  Future<void> updateNotify(NotifyDbModel notifyDbModel) {
+    return _databaseModule.notifyDao.updateNotify(notifyDbModel);
+  }
+
+  Future<void> deleteNotifyById({required int id}) {
+    return _databaseModule.notifyDao.deleteNotifyById(id);
   }
 }

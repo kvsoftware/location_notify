@@ -10,7 +10,10 @@ void main() async {
   await AppBinding().dependencies();
   runApp(
     GetMaterialApp(
-      theme: ThemeData(primarySwatch: Colors.grey),
+      theme: ThemeData(
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(centerTitle: true),
+      ),
       translationsKeys: AppTranslation.translations,
       locale: _getDefaultLocale(),
       supportedLocales: {_getDefaultLocale()},

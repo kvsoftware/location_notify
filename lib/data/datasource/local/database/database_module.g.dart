@@ -116,7 +116,7 @@ class _$NotifyDao extends NotifyDao {
                   'address': item.address,
                   'isEnabled': item.isEnabled ? 1 : 0
                 }),
-        _notifyDbModelDeletionAdapter = DeletionAdapter(
+        _notifyDbModelUpdateAdapter = UpdateAdapter(
             database,
             'notify',
             ['id'],
@@ -138,7 +138,7 @@ class _$NotifyDao extends NotifyDao {
 
   final InsertionAdapter<NotifyDbModel> _notifyDbModelInsertionAdapter;
 
-  final DeletionAdapter<NotifyDbModel> _notifyDbModelDeletionAdapter;
+  final UpdateAdapter<NotifyDbModel> _notifyDbModelUpdateAdapter;
 
   @override
   Future<NotifyDbModel?> getNotifyById(int id) async {
@@ -168,13 +168,20 @@ class _$NotifyDao extends NotifyDao {
   }
 
   @override
+  Future<void> deleteNotifyById(int id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM notify WHERE id = ?1', arguments: [id]);
+  }
+
+  @override
   Future<void> insertNotify(NotifyDbModel notifyDbModel) async {
     await _notifyDbModelInsertionAdapter.insert(
         notifyDbModel, OnConflictStrategy.replace);
   }
 
   @override
-  Future<void> deleteNotify(NotifyDbModel notifyDbModel) async {
-    await _notifyDbModelDeletionAdapter.delete(notifyDbModel);
+  Future<void> updateNotify(NotifyDbModel notifyDbModel) async {
+    await _notifyDbModelUpdateAdapter.update(
+        notifyDbModel, OnConflictStrategy.abort);
   }
 }

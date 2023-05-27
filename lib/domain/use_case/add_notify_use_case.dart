@@ -24,7 +24,7 @@ class AddNotifyUseCase {
         name: "Test1",
         latitude: addressEntity.latitude,
         longitude: addressEntity.longitude,
-        radius: radius,
+        radius: 50,
         address: addressEntity.displayName,
         isEnabled: false,
       ),

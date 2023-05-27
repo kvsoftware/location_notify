@@ -13,6 +13,9 @@ abstract class NotifyDao {
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertNotify(NotifyDbModel notifyDbModel);
 
-  @delete
-  Future<void> deleteNotify(NotifyDbModel notifyDbModel);
+  @Update()
+  Future<void> updateNotify(NotifyDbModel notifyDbModel);
+
+  @Query('DELETE FROM notify WHERE id = :id')
+  Future<void> deleteNotifyById(int id);
 }

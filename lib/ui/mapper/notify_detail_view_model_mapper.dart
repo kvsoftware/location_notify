@@ -1,9 +1,9 @@
 import '../../domain/entity/notify_entity.dart';
-import '../datasource/local/model/notify_db_model.dart';
+import '../view_model/notify_detail_view_model.dart';
 
-extension NotifyDbModelMapping on NotifyDbModel {
-  NotifyEntity toNotifyEntity() {
-    return NotifyEntity(
+extension NotifyEntityMapping on NotifyEntity {
+  NotifyDetailViewModel toNotifyDetailViewModel() {
+    return NotifyDetailViewModel(
       id: id ?? 0,
       name: name,
       latitude: latitude,
@@ -15,9 +15,9 @@ extension NotifyDbModelMapping on NotifyDbModel {
   }
 }
 
-extension NotifyEntityMapping on NotifyEntity {
-  NotifyDbModel toNotifyDbModel() {
-    return NotifyDbModel(
+extension NotifyDetailViewModelMapping on NotifyDetailViewModel {
+  NotifyEntity toNotifyEntity() {
+    return NotifyEntity(
       id: id,
       name: name,
       latitude: latitude,
