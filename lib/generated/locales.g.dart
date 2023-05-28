@@ -12,6 +12,12 @@ class LocaleKeys {
   LocaleKeys._();
   static const global_ok = 'global_ok';
   static const global_cancel = 'global_cancel';
+  static const background_location_noti_android_title =
+      'background_location_noti_android_title';
+  static const background_location_noti_android_subtitle =
+      'background_location_noti_android_subtitle';
+  static const alert_notification_title = 'alert_notification_title';
+  static const alert_notification_message = 'alert_notification_message';
   static const home_title = 'home_title';
   static const notify_detail_title = 'notify_detail_title';
   static const notify_detail_text_name_hint = 'notify_detail_text_name_hint';
@@ -39,6 +45,11 @@ class Locales {
   static const en = {
     'global_ok': 'OK',
     'global_cancel': 'Cancel',
+    'background_location_noti_android_title': 'Location Notify',
+    'background_location_noti_android_subtitle':
+        'Tracking your location to determine proximity to your favorite place.',
+    'alert_notification_title': 'Location Notify',
+    'alert_notification_message': 'Your location is close to',
     'home_title': 'Location Notify',
     'notify_detail_title': 'Notify',
     'notify_detail_text_name_hint': 'Add name',

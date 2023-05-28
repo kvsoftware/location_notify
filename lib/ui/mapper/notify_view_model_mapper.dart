@@ -14,3 +14,17 @@ extension NotifyEntityMapper on NotifyEntity {
     );
   }
 }
+
+extension NotifyDetailViewModelMapping on NotifyViewModel {
+  NotifyEntity toNotifyEntity() {
+    return NotifyEntity(
+      id: id,
+      name: name,
+      address: address,
+      latitude: latitude,
+      longitude: longitude,
+      radius: radius,
+      isEnabled: isEnabled,
+    );
+  }
+}

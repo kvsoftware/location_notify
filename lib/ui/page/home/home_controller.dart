@@ -1,11 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../domain/use_case/add_notify_use_case.dart';
 import '../../../domain/use_case/get_notifies_use_case.dart';
+import '../../../domain/use_case/update_notify_use_case.dart';
+import '../../../generated/locales.g.dart';
 import '../../base_controller.dart';
 import '../../mapper/notify_view_model_mapper.dart';
 import '../../view_model/notify_view_model.dart';
@@ -13,8 +17,9 @@ import '../../view_model/notify_view_model.dart';
 class HomeController extends BaseController {
   final GetNotifiesUseCase _getNotifiesUseCase;
   final AddNotifyUseCase _addNotifyUseCase;
+  final UpdateNotifyUseCase _updateNotifyUseCase;
 
-  HomeController(this._getNotifiesUseCase, this._addNotifyUseCase);
+  HomeController(this._getNotifiesUseCase, this._addNotifyUseCase, this._updateNotifyUseCase);
 
   final notifies = <NotifyViewModel>[].obs;
   StreamSubscription<LocationData>? locationSubscription;
@@ -73,11 +78,12 @@ class HomeController extends BaseController {
 
     await location.enableBackgroundMode();
     await location.changeNotificationOptions(
-      title: 'Geolocation',
-      subtitle: 'Geolocation detection',
+      title: LocaleKeys.background_location_noti_android_title.tr,
+      subtitle: LocaleKeys.background_location_noti_android_subtitle.tr,
+      iconName: "ic_notification",
     );
 
-    locationSubscription = location.onLocationChanged.listen((LocationData currentLocation) {
+    locationSubscription = location.onLocationChanged.listen((LocationData currentLocation) async {
       final notify = notifies.value.firstWhereOrNull((element) => element.isEnabled == true);
       if (notify == null) {
         return;
@@ -91,16 +97,48 @@ class HomeController extends BaseController {
         LatLng(notify.latitude, notify.longitude),
       );
 
-      print("${meter}");
       if (meter <= notify.radius) {
-        print("=========================");
-        print("Alert");
-        print("=========================");
+        final notifyViewModel = NotifyViewModel(
+            id: notify.id,
+            name: notify.name,
+            address: notify.address,
+            latitude: notify.latitude,
+            longitude: notify.longitude,
+            radius: notify.radius,
+            isEnabled: false);
+
+        _updateNotify(notifyViewModel);
+        getNotifies();
+        _showNotification(notifyViewModel);
       }
     });
   }
 
   void _stopLocation() {
     locationSubscription?.cancel();
+  }
+
+  void _updateNotify(NotifyViewModel notifyViewModel) async {
+    isLoading(true);
+    await _updateNotifyUseCase.invoke(notifyEntity: notifyViewModel.toNotifyEntity());
+    isLoading(false);
+  }
+
+  void _showNotification(NotifyViewModel notifyViewModel) async {
+    const androidNotificationDetails = AndroidNotificationDetails(
+      'notification',
+      'Messages',
+      importance: Importance.max,
+      priority: Priority.high,
+      icon: "ic_notification",
+    );
+    const notificationDetails = NotificationDetails(android: androidNotificationDetails);
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.show(
+      UniqueKey().hashCode,
+      LocaleKeys.alert_notification_title.tr,
+      "${LocaleKeys.alert_notification_message.tr} ${notifyViewModel.name}",
+      notificationDetails,
+    );
   }
 }

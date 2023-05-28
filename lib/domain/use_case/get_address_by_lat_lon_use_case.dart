@@ -1,6 +1,5 @@
-import '../entity/address_entity.dart';
-
 import '../../data/repository/map_repository.dart';
+import '../entity/address_entity.dart';
 
 class GetAddressByLatLonUseCase {
   final MapRepository _mapRepository;

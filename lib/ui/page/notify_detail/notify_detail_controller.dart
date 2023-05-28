@@ -6,9 +6,9 @@ import '../../../domain/use_case/delete_notify_by_id_use_case.dart';
 import '../../../domain/use_case/get_notify_by_id_use_case.dart';
 import '../../../domain/use_case/update_notify_use_case.dart';
 import '../../base_controller.dart';
-import '../../mapper/notify_detail_view_model_mapper.dart';
+import '../../mapper/notify_view_model_mapper.dart';
 import '../../view_model/address_view_model.dart';
-import '../../view_model/notify_detail_view_model.dart';
+import '../../view_model/notify_view_model.dart';
 import 'notify_detail_view.dart';
 
 class NotifyDetailController extends BaseController {
@@ -21,7 +21,7 @@ class NotifyDetailController extends BaseController {
   final textEditingcontroller = TextEditingController();
   final markers = <Marker>[].obs;
   final circles = <Circle>[].obs;
-  final notifyDetail = Rxn<NotifyDetailViewModel>();
+  final notifyDetail = Rxn<NotifyViewModel>();
 
   late GoogleMapController _googleMapController;
 
@@ -40,18 +40,16 @@ class NotifyDetailController extends BaseController {
     if (notifyEntity == null) {
       return;
     }
-    _renderNotify(notifyEntity.toNotifyDetailViewModel());
+
+    _renderNotify(notifyEntity.toNotifyViewModel());
   }
 
-  _renderNotify(NotifyDetailViewModel notifyDetail) {
-    this.markers([notifyDetail.toMarker()]);
-    this.circles([notifyDetail.toCircle()]);
-    this.notifyDetail(notifyDetail);
-    textEditingcontroller.text = notifyDetail.name;
-    _googleMapController.moveCamera(CameraUpdate.newLatLngZoom(
-      LatLng(notifyDetail.latitude, notifyDetail.longitude),
-      16,
-    ));
+  _renderNotify(NotifyViewModel notify) {
+    this.markers([notify.toMarker()]);
+    this.circles([notify.toCircle()]);
+    this.notifyDetail(notify);
+    textEditingcontroller.text = notify.name;
+    _googleMapController.moveCamera(CameraUpdate.newLatLngZoom(LatLng(notify.latitude, notify.longitude), 16));
   }
 
   onMapCreated(GoogleMapController controller) {
@@ -63,7 +61,7 @@ class NotifyDetailController extends BaseController {
     if (notifyViewModel == null) {
       return;
     }
-    var newNotifyDetail = NotifyDetailViewModel(
+    var newNotifyDetail = NotifyViewModel(
       id: notifyViewModel.id,
       name: name,
       address: notifyViewModel.address,
@@ -80,7 +78,7 @@ class NotifyDetailController extends BaseController {
     if (notifyViewModel == null) {
       return;
     }
-    var newNotifyDetail = NotifyDetailViewModel(
+    var newNotifyDetail = NotifyViewModel(
       id: notifyViewModel.id,
       name: notifyViewModel.name,
       address: notifyViewModel.address,
@@ -97,7 +95,7 @@ class NotifyDetailController extends BaseController {
     if (notifyViewModel == null) {
       return;
     }
-    var newNotifyDetail = NotifyDetailViewModel(
+    var newNotifyDetail = NotifyViewModel(
       id: notifyViewModel.id,
       name: notifyViewModel.name,
       address: notifyViewModel.address,
@@ -114,7 +112,7 @@ class NotifyDetailController extends BaseController {
     if (notifyViewModel == null) {
       return;
     }
-    var newNotifyDetail = NotifyDetailViewModel(
+    var newNotifyDetail = NotifyViewModel(
       id: notifyViewModel.id,
       name: notifyViewModel.name,
       address: addressViewModel.displayName,

@@ -1,6 +1,10 @@
 {
     "global_ok": "OK",
     "global_cancel": "Cancel",
+    "background_location_noti_android_title": "Location Notify",
+    "background_location_noti_android_subtitle": "Tracking your location to determine proximity to your favorite place.",
+    "alert_notification_title": "Location Notify",
+    "alert_notification_message": "Your location is close to",
     "home_title": "Location Notify",
     "notify_detail_title": "Notify",
     "notify_detail_text_name_hint": "Add name",

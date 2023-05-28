@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../generated/locales.g.dart';
 import '../../base_view.dart';
 import '../../routes/app_pages.dart';
-import '../../view_model/notify_detail_view_model.dart';
+import '../../view_model/notify_view_model.dart';
 import '../map/map_view.dart';
 import 'notify_detail_controller.dart';
 
@@ -34,25 +34,25 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
     );
   }
 
-  Widget _buildNotifyDetail(NotifyDetailViewModel notifyDetailViewModel) {
+  Widget _buildNotifyDetail(NotifyViewModel notifyViewModel) {
     return Column(
       children: [
-        _buildMap(notifyDetailViewModel),
+        _buildMap(notifyViewModel),
         const SizedBox(height: 8),
         ListTile(
           leading: const Icon(Icons.label_outline),
-          title: Text(notifyDetailViewModel.name),
-          onTap: () => _showDialogEditName(notifyDetailViewModel.name),
+          title: Text(notifyViewModel.name),
+          onTap: () => _showDialogEditName(notifyViewModel.name),
         ),
         ListTile(
           leading: const Icon(Icons.radar),
-          title: Text("${notifyDetailViewModel.radius} ${LocaleKeys.notify_detail_text_metres.tr}"),
-          onTap: () => _showDialogEditRadius(notifyDetailViewModel.radius),
+          title: Text("${notifyViewModel.radius} ${LocaleKeys.notify_detail_text_metres.tr}"),
+          onTap: () => _showDialogEditRadius(notifyViewModel.radius),
         ),
         CheckboxListTile(
           title: Text(LocaleKeys.notify_detail_text_status.tr),
           secondary: const Icon(Icons.toggle_off_outlined),
-          value: notifyDetailViewModel.isEnabled,
+          value: notifyViewModel.isEnabled,
           onChanged: (bool? value) {
             if (value == null) {
               return;
@@ -70,13 +70,13 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
     );
   }
 
-  Widget _buildMap(NotifyDetailViewModel notifyDetailViewModel) {
+  Widget _buildMap(NotifyViewModel notifyViewModel) {
     return Expanded(
       child: Stack(
         children: [
           GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: LatLng(notifyDetailViewModel.latitude, notifyDetailViewModel.longitude),
+              target: LatLng(notifyViewModel.latitude, notifyViewModel.longitude),
               zoom: 16,
             ),
             zoomGesturesEnabled: false,
@@ -97,8 +97,8 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
                   final address = await Get.toNamed(
                     Routes.MAP,
                     arguments: MapViewArgument(
-                      notifyDetailViewModel.latitude,
-                      notifyDetailViewModel.longitude,
+                      notifyViewModel.latitude,
+                      notifyViewModel.longitude,
                     ),
                   );
                   controller.updateNotifyAddress(address);
