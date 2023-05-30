@@ -68,7 +68,7 @@ class HomeView extends BaseView<HomeController> {
               Switch(
                 value: notifyViewModel.isEnabled,
                 onChanged: (bool value) {
-                  // Do something
+                  controller.updateStatus(notifyViewModel, value);
                 },
               ),
             ],

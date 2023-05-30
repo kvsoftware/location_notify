@@ -1,10 +1,9 @@
-import 'dart:async';
+import 'dart:io';
+import 'dart:isolate';
 
-import 'package:flutter/material.dart';
+import 'package:fl_location/fl_location.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../domain/use_case/add_notify_use_case.dart';
 import '../../../domain/use_case/get_notifies_use_case.dart';
@@ -13,6 +12,7 @@ import '../../../generated/locales.g.dart';
 import '../../base_controller.dart';
 import '../../mapper/notify_view_model_mapper.dart';
 import '../../view_model/notify_view_model.dart';
+import 'location_task_handler.dart';
 
 class HomeController extends BaseController {
   final GetNotifiesUseCase _getNotifiesUseCase;
@@ -22,17 +22,18 @@ class HomeController extends BaseController {
   HomeController(this._getNotifiesUseCase, this._addNotifyUseCase, this._updateNotifyUseCase);
 
   final notifies = <NotifyViewModel>[].obs;
-  StreamSubscription<LocationData>? locationSubscription;
+  ReceivePort? _receivePort;
 
   @override
   void onReady() {
     super.onReady();
+    _initializeForegroundTask();
     getNotifies();
   }
 
   @override
   void onClose() {
-    _stopLocation();
+    _receivePort?.close();
     super.onClose();
   }
 
@@ -46,76 +47,26 @@ class HomeController extends BaseController {
     final notifyViewModels = notifyEntities.map((e) => e.toNotifyViewModel()).toList();
     notifies(notifyViewModels);
 
-    _stopLocation();
-    final isOn = notifyViewModels.firstWhereOrNull((element) => element.isEnabled == true);
-    if (isOn == null) {
+    _stopTrackingLocation();
+    final notifyViewModel = notifyViewModels.firstWhereOrNull((element) => element.isEnabled == true);
+    if (notifyViewModel == null) {
       return;
     }
-    _startLocation();
+    _startTrackingLocation(notifyViewModel);
   }
 
-  void _startLocation() async {
-    Location location = Location();
-
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
-
-    serviceEnabled = await location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-      if (!serviceEnabled) {
-        return;
-      }
-    }
-
-    permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    await location.enableBackgroundMode();
-    await location.changeNotificationOptions(
-      title: LocaleKeys.background_location_noti_android_title.tr,
-      subtitle: LocaleKeys.background_location_noti_android_subtitle.tr,
-      iconName: "ic_notification",
+  void updateStatus(NotifyViewModel notifyViewModel, bool isEnabled) {
+    final newNotifyViewModel = NotifyViewModel(
+      id: notifyViewModel.id,
+      name: notifyViewModel.name,
+      address: notifyViewModel.address,
+      latitude: notifyViewModel.latitude,
+      longitude: notifyViewModel.longitude,
+      radius: notifyViewModel.radius,
+      isEnabled: isEnabled,
     );
-
-    locationSubscription = location.onLocationChanged.listen((LocationData currentLocation) async {
-      final notify = notifies.value.firstWhereOrNull((element) => element.isEnabled == true);
-      if (notify == null) {
-        return;
-      }
-      if (currentLocation.latitude == null || currentLocation.longitude == null) {
-        return;
-      }
-
-      final meter = const Distance().call(
-        LatLng(currentLocation.latitude!, currentLocation.longitude!),
-        LatLng(notify.latitude, notify.longitude),
-      );
-
-      if (meter <= notify.radius) {
-        final notifyViewModel = NotifyViewModel(
-            id: notify.id,
-            name: notify.name,
-            address: notify.address,
-            latitude: notify.latitude,
-            longitude: notify.longitude,
-            radius: notify.radius,
-            isEnabled: false);
-
-        _updateNotify(notifyViewModel);
-        getNotifies();
-        _showNotification(notifyViewModel);
-      }
-    });
-  }
-
-  void _stopLocation() {
-    locationSubscription?.cancel();
+    _updateNotify(newNotifyViewModel);
+    getNotifies();
   }
 
   void _updateNotify(NotifyViewModel notifyViewModel) async {
@@ -124,21 +75,87 @@ class HomeController extends BaseController {
     isLoading(false);
   }
 
-  void _showNotification(NotifyViewModel notifyViewModel) async {
-    const androidNotificationDetails = AndroidNotificationDetails(
-      'notification',
-      'Messages',
-      importance: Importance.max,
-      priority: Priority.high,
-      icon: "ic_notification",
+  void _startTrackingLocation(NotifyViewModel notifyViewModel) async {
+    if (Platform.isAndroid) {
+      if (!await FlutterForegroundTask.canDrawOverlays) {
+        await FlutterForegroundTask.openSystemAlertWindowSettings();
+      }
+
+      if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
+        await FlutterForegroundTask.requestIgnoreBatteryOptimization();
+      }
+
+      final notificationPermissionStatus = await FlutterForegroundTask.checkNotificationPermission();
+      if (notificationPermissionStatus != NotificationPermission.granted) {
+        await FlutterForegroundTask.requestNotificationPermission();
+      }
+    }
+
+    if (!await FlLocation.isLocationServicesEnabled) {
+      return;
+    }
+    final locationPermission = await FlLocation.checkLocationPermission();
+    if (locationPermission == LocationPermission.deniedForever) {
+      return;
+    }
+    if (locationPermission == LocationPermission.denied) {
+      final locationPermission = await FlLocation.requestLocationPermission();
+      if (locationPermission == LocationPermission.denied || locationPermission == LocationPermission.deniedForever) {
+        return;
+      }
+    }
+    if (locationPermission == LocationPermission.whileInUse) {
+      return;
+    }
+
+    _receivePort = FlutterForegroundTask.receivePort;
+    _receivePort?.listen((data) {
+      if (data is bool && data == true) {
+        getNotifies();
+      }
+    });
+    if (await FlutterForegroundTask.isRunningService) {
+      return;
+    } else {
+      await FlutterForegroundTask.startService(
+        notificationTitle: LocaleKeys.android_foreground_service_notification_title.tr,
+        notificationText: LocaleKeys.android_foreground_service_notification_body.tr,
+        callback: startCallback,
+      );
+    }
+  }
+
+  void _stopTrackingLocation() async {
+    await FlutterForegroundTask.stopService();
+  }
+
+  void _initializeForegroundTask() async {
+    FlutterForegroundTask.init(
+      androidNotificationOptions: AndroidNotificationOptions(
+        id: 500,
+        channelId: 'foregroud',
+        channelName: 'Foreground',
+        channelImportance: NotificationChannelImportance.LOW,
+        priority: NotificationPriority.LOW,
+        iconData: const NotificationIconData(
+          resType: ResourceType.mipmap,
+          resPrefix: ResourcePrefix.ic,
+          name: 'launcher',
+        ),
+      ),
+      iosNotificationOptions: const IOSNotificationOptions(
+        showNotification: true,
+        playSound: false,
+      ),
+      foregroundTaskOptions: const ForegroundTaskOptions(
+        interval: 5000,
+        isOnceEvent: false,
+        autoRunOnBoot: true,
+        allowWakeLock: true,
+        allowWifiLock: true,
+      ),
     );
-    const notificationDetails = NotificationDetails(android: androidNotificationDetails);
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin.show(
-      UniqueKey().hashCode,
-      LocaleKeys.alert_notification_title.tr,
-      "${LocaleKeys.alert_notification_message.tr} ${notifyViewModel.name}",
-      notificationDetails,
-    );
+    await FlutterForegroundTask.saveData(key: 'notification_title', value: LocaleKeys.alert_notification_title.tr);
+    await FlutterForegroundTask.saveData(key: 'notification_body', value: LocaleKeys.alert_notification_body.tr);
   }
 }

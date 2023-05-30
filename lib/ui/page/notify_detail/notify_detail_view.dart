@@ -20,10 +20,20 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => _onWillPop(),
-      child: Scaffold(
-        appBar: AppBar(title: Text(LocaleKeys.notify_detail_title.tr)),
-        body: Obx(
-          () => Stack(
+      child: Obx(
+        () => Scaffold(
+          appBar: AppBar(
+            title: Text(LocaleKeys.notify_detail_title.tr),
+            actions: [
+              Switch(
+                value: controller.notifyDetail.value?.isEnabled ?? false,
+                onChanged: (bool value) {
+                  controller.updateStatus(value);
+                },
+              ),
+            ],
+          ),
+          body: Stack(
             children: [
               if (controller.notifyDetail.value != null) _buildNotifyDetail(controller.notifyDetail.value!),
               if (controller.isLoading.isTrue) const Center(child: CircularProgressIndicator()),
@@ -49,17 +59,17 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
           title: Text("${notifyViewModel.radius} ${LocaleKeys.notify_detail_text_metres.tr}"),
           onTap: () => _showDialogEditRadius(notifyViewModel.radius),
         ),
-        CheckboxListTile(
-          title: Text(LocaleKeys.notify_detail_text_status.tr),
-          secondary: const Icon(Icons.toggle_off_outlined),
-          value: notifyViewModel.isEnabled,
-          onChanged: (bool? value) {
-            if (value == null) {
-              return;
-            }
-            controller.updateStatus(value);
-          },
-        ),
+        // CheckboxListTile(
+        //   title: Text(LocaleKeys.notify_detail_text_status.tr),
+        //   secondary: const Icon(Icons.toggle_off_outlined),
+        //   value: notifyViewModel.isEnabled,
+        //   onChanged: (bool? value) {
+        //     if (value == null) {
+        //       return;
+        //     }
+        //     controller.updateStatus(value);
+        //   },
+        // ),
         ListTile(
           minVerticalPadding: 0,
           leading: const Icon(Icons.delete_outlined),
