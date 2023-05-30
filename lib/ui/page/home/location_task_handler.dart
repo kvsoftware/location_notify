@@ -13,6 +13,7 @@ import '../../../data/repository/notify_repository.dart';
 import '../../../domain/entity/notify_entity.dart';
 import '../../../domain/use_case/get_notifies_use_case.dart';
 import '../../../domain/use_case/update_notify_use_case.dart';
+import '../../routes/app_pages.dart';
 
 @pragma('vm:entry-point')
 void startCallback() {
@@ -81,7 +82,9 @@ class LocationTaskHandler extends TaskHandler {
   void onButtonPressed(String id) {}
 
   @override
-  void onNotificationPressed() {}
+  void onNotificationPressed() {
+    FlutterForegroundTask.launchApp(Routes.HOME);
+  }
 
   void _showAlertNotification(notificationTitle, notificationBody) async {
     const androidNotificationDetails = AndroidNotificationDetails(

@@ -10,6 +10,7 @@ void main() async {
   await AppBinding().dependencies();
   runApp(
     GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         appBarTheme: const AppBarTheme(centerTitle: true),
