@@ -5,6 +5,7 @@ import '../../../generated/locales.g.dart';
 import '../../base_view.dart';
 import '../../routes/app_pages.dart';
 import '../../view_model/notify_view_model.dart';
+import '../map/map_view.dart';
 import '../notify_detail/notify_detail_view.dart';
 import 'home_controller.dart';
 
@@ -18,7 +19,9 @@ class HomeView extends BaseView<HomeController> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add_location_alt_outlined),
         onPressed: () {
-          controller.addNotify();
+          Get.toNamed(Routes.MAP, arguments: MapViewArgument(isNotifyCreated: true))?.then((value) {
+            controller.getNotifies();
+          });
         },
       ),
     );

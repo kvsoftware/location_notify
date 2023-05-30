@@ -9,24 +9,23 @@ class AddNotifyUseCase {
   AddNotifyUseCase(this._mapRepository, this._notifyRepository);
 
   Future<void> invoke({
-    String name = '',
-    double lat = 0.0,
-    double lon = 0.0,
-    double radius = 0,
-    String address = '',
-    bool isEnabled = false,
+    required String name,
+    required double lat,
+    required double lon,
+    required double radius,
+    required String address,
+    required bool isEnabled,
   }) async {
-    final addressEntity = await _mapRepository.getAddressByLatLng(latitude: 55.888208, longitude: -4.288087);
-
+    final addressEntity = await _mapRepository.getAddressByLatLng(latitude: lat, longitude: lon);
     return _notifyRepository.insertNotify(
       NotifyEntity(
         id: null,
-        name: "Test1",
+        name: name,
         latitude: addressEntity.latitude,
         longitude: addressEntity.longitude,
-        radius: 50,
+        radius: radius,
         address: addressEntity.displayName,
-        isEnabled: false,
+        isEnabled: isEnabled,
       ),
     );
   }

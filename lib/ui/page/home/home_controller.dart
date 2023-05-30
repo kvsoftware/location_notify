@@ -5,7 +5,6 @@ import 'package:fl_location/fl_location.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
 
-import '../../../domain/use_case/add_notify_use_case.dart';
 import '../../../domain/use_case/get_notifies_use_case.dart';
 import '../../../domain/use_case/update_notify_use_case.dart';
 import '../../../generated/locales.g.dart';
@@ -16,10 +15,9 @@ import 'location_task_handler.dart';
 
 class HomeController extends BaseController {
   final GetNotifiesUseCase _getNotifiesUseCase;
-  final AddNotifyUseCase _addNotifyUseCase;
   final UpdateNotifyUseCase _updateNotifyUseCase;
 
-  HomeController(this._getNotifiesUseCase, this._addNotifyUseCase, this._updateNotifyUseCase);
+  HomeController(this._getNotifiesUseCase, this._updateNotifyUseCase);
 
   final notifies = <NotifyViewModel>[].obs;
   ReceivePort? _receivePort;
@@ -35,11 +33,6 @@ class HomeController extends BaseController {
   void onClose() {
     _receivePort?.close();
     super.onClose();
-  }
-
-  void addNotify() async {
-    await _addNotifyUseCase.invoke();
-    getNotifies();
   }
 
   void getNotifies() async {
@@ -155,6 +148,7 @@ class HomeController extends BaseController {
         allowWifiLock: true,
       ),
     );
+    await FlutterForegroundTask.stopService();
     await FlutterForegroundTask.saveData(key: 'notification_title', value: LocaleKeys.alert_notification_title.tr);
     await FlutterForegroundTask.saveData(key: 'notification_body', value: LocaleKeys.alert_notification_body.tr);
   }

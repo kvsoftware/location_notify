@@ -107,8 +107,9 @@ class NotifyDetailView extends BaseView<NotifyDetailController> {
                   final address = await Get.toNamed(
                     Routes.MAP,
                     arguments: MapViewArgument(
-                      notifyViewModel.latitude,
-                      notifyViewModel.longitude,
+                      isNotifyCreated: false,
+                      latitude: notifyViewModel.latitude,
+                      longitude: notifyViewModel.longitude,
                     ),
                   );
                   controller.updateNotifyAddress(address);

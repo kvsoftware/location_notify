@@ -8,9 +8,11 @@ import '../../routes/app_pages.dart';
 import 'map_controller.dart';
 
 class MapViewArgument {
-  final double latitude;
-  final double longitude;
-  MapViewArgument(this.latitude, this.longitude);
+  final bool isNotifyCreated;
+  final double? latitude;
+  final double? longitude;
+
+  MapViewArgument({required this.isNotifyCreated, this.latitude, this.longitude});
 }
 
 class MapView extends BaseView<MapController> {
@@ -29,7 +31,7 @@ class MapView extends BaseView<MapController> {
               if (address == null) {
                 return;
               }
-              controller.onCameraMove2(address);
+              controller.moveCameraByAddress(address);
             },
           )
         ],
@@ -93,7 +95,7 @@ class MapView extends BaseView<MapController> {
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 32),
         child: ElevatedButton(
           onPressed: () {
-            Get.back(result: controller.address.value);
+            controller.onSubmit();
           },
           child: Text(LocaleKeys.map_button_select_address.tr),
         ),
