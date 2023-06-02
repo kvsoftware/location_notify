@@ -6,6 +6,7 @@
     "alert_notification_title": "Your location is close to",
     "alert_notification_body": "Tap to setup the location notify",
     "home_title": "Location Notify",
+    "home_empty_placeholder": "No notifies",
     "notify_detail_title": "Notify",
     "notify_detail_text_name_hint": "Add name",
     "notify_detail_text_metres": "Metres",

@@ -15,9 +15,9 @@ class HomeView extends BaseView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(LocaleKeys.home_title.tr)),
-      body: Obx(() => _buildListView(context)),
+      body: Obx(() => _buildContents()),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add_location_alt_outlined),
+        child: const Icon(Icons.add),
         onPressed: () {
           Get.toNamed(Routes.MAP, arguments: MapViewArgument(isNotifyCreated: true))?.then((value) {
             controller.getNotifies();
@@ -27,7 +27,28 @@ class HomeView extends BaseView<HomeController> {
     );
   }
 
-  Widget _buildListView(BuildContext context) {
+  Widget _buildContents() {
+    if (controller.notifies.isEmpty) {
+      return _buildEmptyPlaceHolder();
+    } else {
+      return _buildListView();
+    }
+  }
+
+  Widget _buildEmptyPlaceHolder() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.add_location_alt_outlined, size: 120),
+          const SizedBox(height: 8),
+          Text(LocaleKeys.home_empty_placeholder.tr),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListView() {
     return ListView.builder(
       itemCount: controller.notifies.length,
       itemBuilder: (context, index) {

@@ -19,6 +19,7 @@ class LocaleKeys {
   static const alert_notification_title = 'alert_notification_title';
   static const alert_notification_body = 'alert_notification_body';
   static const home_title = 'home_title';
+  static const home_empty_placeholder = 'home_empty_placeholder';
   static const notify_detail_title = 'notify_detail_title';
   static const notify_detail_text_name_hint = 'notify_detail_text_name_hint';
   static const notify_detail_text_metres = 'notify_detail_text_metres';
@@ -51,6 +52,7 @@ class Locales {
     'alert_notification_title': 'Your location is close to',
     'alert_notification_body': 'Tap to setup the location notify',
     'home_title': 'Location Notify',
+    'home_empty_placeholder': 'No notify',
     'notify_detail_title': 'Notify',
     'notify_detail_text_name_hint': 'Add name',
     'notify_detail_text_metres': 'Metres',
