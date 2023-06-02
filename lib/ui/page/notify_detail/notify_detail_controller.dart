@@ -23,7 +23,7 @@ class NotifyDetailController extends BaseController {
   final circles = <Circle>[].obs;
   final notifyDetail = Rxn<NotifyViewModel>();
 
-  late GoogleMapController _googleMapController;
+  GoogleMapController? _googleMapController;
 
   @override
   void onReady() {
@@ -49,7 +49,7 @@ class NotifyDetailController extends BaseController {
     this.circles([notify.toCircle()]);
     this.notifyDetail(notify);
     textEditingcontroller.text = notify.name;
-    _googleMapController.moveCamera(CameraUpdate.newLatLngZoom(LatLng(notify.latitude, notify.longitude), 16));
+    _googleMapController?.moveCamera(CameraUpdate.newLatLngZoom(LatLng(notify.latitude, notify.longitude), 16));
   }
 
   onMapCreated(GoogleMapController controller) {
