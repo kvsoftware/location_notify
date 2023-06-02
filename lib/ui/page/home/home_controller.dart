@@ -69,36 +69,99 @@ class HomeController extends BaseController {
   }
 
   void _startTrackingLocation(NotifyViewModel notifyViewModel) async {
-    if (Platform.isAndroid) {
-      if (!await FlutterForegroundTask.canDrawOverlays) {
-        await FlutterForegroundTask.openSystemAlertWindowSettings();
-      }
-
-      if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
-        await FlutterForegroundTask.requestIgnoreBatteryOptimization();
-      }
-
-      final notificationPermissionStatus = await FlutterForegroundTask.checkNotificationPermission();
-      if (notificationPermissionStatus != NotificationPermission.granted) {
-        await FlutterForegroundTask.requestNotificationPermission();
-      }
-    }
-
+    // Check if the location is enable or not
     if (!await FlLocation.isLocationServicesEnabled) {
+      await _showDialogError(
+        title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
+        body: LocaleKeys.home_dialog_error_notify_disabled_body_location_disabled.tr,
+        notifyViewModel: notifyViewModel,
+      );
       return;
     }
-    final locationPermission = await FlLocation.checkLocationPermission();
+
+    // Check the location permission
+    var locationPermission = await FlLocation.checkLocationPermission();
     if (locationPermission == LocationPermission.deniedForever) {
+      await _showDialogError(
+        title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
+        body: LocaleKeys.home_dialog_error_notify_disabled_body_permission_location_warning.tr,
+        notifyViewModel: notifyViewModel,
+      );
       return;
     }
+
     if (locationPermission == LocationPermission.denied) {
-      final locationPermission = await FlLocation.requestLocationPermission();
+      locationPermission = await FlLocation.requestLocationPermission();
       if (locationPermission == LocationPermission.denied || locationPermission == LocationPermission.deniedForever) {
+        await _showDialogError(
+          title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
+          body: LocaleKeys.home_dialog_error_notify_disabled_body_permission_location_warning.tr,
+          notifyViewModel: notifyViewModel,
+        );
+        return;
+      }
+      if (locationPermission == LocationPermission.whileInUse) {
+        await _showDialogError(
+          title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
+          body: LocaleKeys.home_dialog_error_notify_disabled_body_permission_background_location_warning.tr,
+          notifyViewModel: notifyViewModel,
+        );
         return;
       }
     }
+
     if (locationPermission == LocationPermission.whileInUse) {
-      return;
+      locationPermission = await FlLocation.requestLocationPermission();
+      if (locationPermission != LocationPermission.always) {
+        await _showDialogError(
+          title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
+          body: LocaleKeys.home_dialog_error_notify_disabled_body_permission_background_location_warning.tr,
+          notifyViewModel: notifyViewModel,
+        );
+        return;
+      }
+    }
+
+    if (Platform.isAndroid) {
+      // if (!await FlutterForegroundTask.canDrawOverlays) {
+      //   await FlutterForegroundTask.openSystemAlertWindowSettings();
+      // }
+
+      // Check the notification permission
+      var notificationPermission = await FlutterForegroundTask.checkNotificationPermission();
+      if (notificationPermission == NotificationPermission.permanently_denied) {
+        await _showDialogError(
+          title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
+          body: LocaleKeys.android_permission_post_notifications_warning.tr,
+          notifyViewModel: notifyViewModel,
+        );
+        return;
+      }
+
+      if (notificationPermission == NotificationPermission.denied) {
+        notificationPermission = await FlutterForegroundTask.requestNotificationPermission();
+        if (notificationPermission == NotificationPermission.denied ||
+            notificationPermission == NotificationPermission.permanently_denied) {
+          await _showDialogError(
+            title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
+            body: LocaleKeys.android_permission_post_notifications_warning.tr,
+            notifyViewModel: notifyViewModel,
+          );
+          return;
+        }
+      }
+
+      // Check the ignore battery optimization permission
+      if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
+        final result = await FlutterForegroundTask.requestIgnoreBatteryOptimization();
+        if (result == false) {
+          await _showDialogError(
+            title: LocaleKeys.home_dialog_warning_ignore_battery_optimization_battery_title.tr,
+            body: LocaleKeys.home_dialog_warning_ignore_battery_optimization_battery_body.tr,
+          );
+          return;
+        }
+      }
     }
 
     _receivePort = FlutterForegroundTask.receivePort;
@@ -151,5 +214,19 @@ class HomeController extends BaseController {
     await FlutterForegroundTask.stopService();
     await FlutterForegroundTask.saveData(key: 'notification_title', value: LocaleKeys.alert_notification_title.tr);
     await FlutterForegroundTask.saveData(key: 'notification_body', value: LocaleKeys.alert_notification_body.tr);
+  }
+
+  Future<void> _showDialogError({required String title, required String body, NotifyViewModel? notifyViewModel}) {
+    if (notifyViewModel != null) {
+      updateStatus(notifyViewModel, false);
+    }
+    return Get.defaultDialog(
+      title: title,
+      middleText: body,
+      textConfirm: LocaleKeys.global_ok.tr,
+      onConfirm: () {
+        Get.back();
+      },
+    );
   }
 }
