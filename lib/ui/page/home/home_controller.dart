@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:fl_location/fl_location.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
+import 'package:location_notify/domain/entity/notify_entity.dart';
 
 import '../../../domain/use_case/get_notifies_use_case.dart';
 import '../../../domain/use_case/update_notify_use_case.dart';
@@ -26,7 +27,7 @@ class HomeController extends BaseController {
   void onReady() {
     super.onReady();
     _initializeForegroundTask();
-    getNotifies();
+    _initializeNotifies();
   }
 
   @override
@@ -59,6 +60,26 @@ class HomeController extends BaseController {
       isEnabled: isEnabled,
     );
     _updateNotify(newNotifyViewModel);
+    getNotifies();
+  }
+
+  void _initializeNotifies() async {
+    if ((await FlutterForegroundTask.isRunningService) == false) {
+      final notifies = await _getNotifiesUseCase.invoke();
+      final enabledNotifies = notifies.where((element) => element.isEnabled == true).toList();
+      for (var notify in enabledNotifies) {
+        final newNotify = NotifyEntity(
+          id: notify.id,
+          name: notify.name,
+          address: notify.address,
+          latitude: notify.latitude,
+          longitude: notify.longitude,
+          radius: notify.radius,
+          isEnabled: false,
+        );
+        await _updateNotifyUseCase.invoke(notifyEntity: newNotify);
+      }
+    }
     getNotifies();
   }
 
