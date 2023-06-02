@@ -4,8 +4,8 @@ import 'dart:isolate';
 import 'package:fl_location/fl_location.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
-import 'package:location_notify/domain/entity/notify_entity.dart';
 
+import '../../../domain/entity/notify_entity.dart';
 import '../../../domain/use_case/get_notifies_use_case.dart';
 import '../../../domain/use_case/update_notify_use_case.dart';
 import '../../../generated/locales.g.dart';
@@ -92,7 +92,7 @@ class HomeController extends BaseController {
   void _startTrackingLocation(NotifyViewModel notifyViewModel) async {
     // Check if the location is enable or not
     if (!await FlLocation.isLocationServicesEnabled) {
-      await _showDialogError(
+      await _showDialog(
         title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
         body: LocaleKeys.home_dialog_error_notify_disabled_body_location_disabled.tr,
         notifyViewModel: notifyViewModel,
@@ -103,7 +103,7 @@ class HomeController extends BaseController {
     // Check the location permission
     var locationPermission = await FlLocation.checkLocationPermission();
     if (locationPermission == LocationPermission.deniedForever) {
-      await _showDialogError(
+      await _showDialog(
         title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
         body: LocaleKeys.home_dialog_error_notify_disabled_body_permission_location_warning.tr,
         notifyViewModel: notifyViewModel,
@@ -114,7 +114,7 @@ class HomeController extends BaseController {
     if (locationPermission == LocationPermission.denied) {
       locationPermission = await FlLocation.requestLocationPermission();
       if (locationPermission == LocationPermission.denied || locationPermission == LocationPermission.deniedForever) {
-        await _showDialogError(
+        await _showDialog(
           title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
           body: LocaleKeys.home_dialog_error_notify_disabled_body_permission_location_warning.tr,
           notifyViewModel: notifyViewModel,
@@ -122,7 +122,7 @@ class HomeController extends BaseController {
         return;
       }
       if (locationPermission == LocationPermission.whileInUse) {
-        await _showDialogError(
+        await _showDialog(
           title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
           body: LocaleKeys.home_dialog_error_notify_disabled_body_permission_background_location_warning.tr,
           notifyViewModel: notifyViewModel,
@@ -134,7 +134,7 @@ class HomeController extends BaseController {
     if (locationPermission == LocationPermission.whileInUse) {
       locationPermission = await FlLocation.requestLocationPermission();
       if (locationPermission != LocationPermission.always) {
-        await _showDialogError(
+        await _showDialog(
           title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
           body: LocaleKeys.home_dialog_error_notify_disabled_body_permission_background_location_warning.tr,
           notifyViewModel: notifyViewModel,
@@ -151,7 +151,7 @@ class HomeController extends BaseController {
       // Check the notification permission
       var notificationPermission = await FlutterForegroundTask.checkNotificationPermission();
       if (notificationPermission == NotificationPermission.permanently_denied) {
-        await _showDialogError(
+        await _showDialog(
           title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
           body: LocaleKeys.android_permission_post_notifications_warning.tr,
           notifyViewModel: notifyViewModel,
@@ -163,7 +163,7 @@ class HomeController extends BaseController {
         notificationPermission = await FlutterForegroundTask.requestNotificationPermission();
         if (notificationPermission == NotificationPermission.denied ||
             notificationPermission == NotificationPermission.permanently_denied) {
-          await _showDialogError(
+          await _showDialog(
             title: LocaleKeys.home_dialog_error_notify_disabled_title.tr,
             body: LocaleKeys.android_permission_post_notifications_warning.tr,
             notifyViewModel: notifyViewModel,
@@ -176,7 +176,7 @@ class HomeController extends BaseController {
       if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
         final result = await FlutterForegroundTask.requestIgnoreBatteryOptimization();
         if (result == false) {
-          await _showDialogError(
+          await _showDialog(
             title: LocaleKeys.home_dialog_warning_ignore_battery_optimization_battery_title.tr,
             body: LocaleKeys.home_dialog_warning_ignore_battery_optimization_battery_body.tr,
           );
@@ -237,7 +237,7 @@ class HomeController extends BaseController {
     await FlutterForegroundTask.saveData(key: 'notification_body', value: LocaleKeys.alert_notification_body.tr);
   }
 
-  Future<void> _showDialogError({required String title, required String body, NotifyViewModel? notifyViewModel}) {
+  Future<void> _showDialog({required String title, required String body, NotifyViewModel? notifyViewModel}) {
     if (notifyViewModel != null) {
       updateStatus(notifyViewModel, false);
     }

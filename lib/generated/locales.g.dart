@@ -49,6 +49,12 @@ class LocaleKeys {
       'notify_detail_dialog_delete_notify_message';
   static const map_title = 'map_title';
   static const map_button_select_address = 'map_button_select_address';
+  static const map_dialog_error_my_location_title =
+      'map_dialog_error_my_location_title';
+  static const map_dialog_error_my_location_body_location_disabled =
+      'map_dialog_error_my_location_body_location_disabled';
+  static const map_dialog_error_my_location_permission_location_warning =
+      'map_dialog_error_my_location_permission_location_warning';
   static const search_location_title = 'search_location_title';
   static const search_location_textfield_search_hint =
       'search_location_textfield_search_hint';
@@ -92,6 +98,11 @@ class Locales {
         'Are you sure to delete this notify?',
     'map_title': 'Search location',
     'map_button_select_address': 'Select this address',
+    'map_dialog_error_my_location_title': 'Unable to detect your location',
+    'map_dialog_error_my_location_body_location_disabled':
+        'To use my location, you need to enable the location service.',
+    'map_dialog_error_my_location_permission_location_warning':
+        'To determine my location, you need to grant location permission.',
     'search_location_title': 'Search location',
     'search_location_textfield_search_hint': 'Search...',
     'search_location_text_not_found': 'No data.',

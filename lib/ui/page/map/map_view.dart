@@ -43,6 +43,7 @@ class MapView extends BaseView<MapController> {
             _buildAddress(),
             _buildMarker(context),
             _buildSubmit(),
+            _buildMyLocation(context),
             if (controller.isLoading.isTrue) const Center(child: CircularProgressIndicator()),
           ],
         ),
@@ -87,12 +88,21 @@ class MapView extends BaseView<MapController> {
     );
   }
 
+  Widget _buildMarker(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 35),
+        child: Icon(Icons.location_on_rounded, size: 50, color: Theme.of(context).colorScheme.secondary),
+      ),
+    );
+  }
+
   Widget _buildSubmit() {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Container(
-        width: Get.width,
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 16),
         child: ElevatedButton(
           onPressed: () {
             controller.onSubmit();
@@ -103,12 +113,17 @@ class MapView extends BaseView<MapController> {
     );
   }
 
-  Widget _buildMarker(BuildContext context) {
+  Widget _buildMyLocation(BuildContext context) {
     return Align(
-      alignment: Alignment.center,
-      child: Container(
-        padding: const EdgeInsets.only(bottom: 35),
-        child: Icon(Icons.location_on_rounded, size: 50, color: Theme.of(context).colorScheme.secondary),
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 16, 16),
+        child: FloatingActionButton(
+          child: const Icon(Icons.my_location_outlined),
+          onPressed: () {
+            controller.onMyLocationButtonClicked();
+          },
+        ),
       ),
     );
   }
