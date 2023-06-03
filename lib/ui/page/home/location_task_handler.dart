@@ -38,6 +38,7 @@ class LocationTaskHandler extends TaskHandler {
       (event) async {
         final notifies = await getNotifiesUseCase.invoke();
         final enabledNotifies = notifies.where((element) => element.isEnabled).toList();
+
         if (enabledNotifies.isEmpty) {
           await FlutterForegroundTask.stopService();
           return;
@@ -75,7 +76,7 @@ class LocationTaskHandler extends TaskHandler {
 
   @override
   Future<void> onDestroy(DateTime timestamp, SendPort? sendPort) async {
-    await _streamSubscription?.cancel();
+    // Do nothing
   }
 
   @override
@@ -94,10 +95,14 @@ class LocationTaskHandler extends TaskHandler {
       priority: Priority.high,
       icon: "@mipmap/ic_launcher",
     );
-    const notificationDetails = NotificationDetails(android: androidNotificationDetails);
+    const iosInitializationSetting = DarwinNotificationDetails(
+      presentAlert: true,
+    );
+    const notificationDetails = NotificationDetails(android: androidNotificationDetails, iOS: iosInitializationSetting);
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
     await flutterLocalNotificationsPlugin.show(
-      UniqueKey().hashCode,
+      1,
       notificationTitle,
       notificationBody,
       notificationDetails,

@@ -191,9 +191,8 @@ class HomeController extends BaseController {
         getNotifies();
       }
     });
-    if (await FlutterForegroundTask.isRunningService) {
-      return;
-    } else {
+
+    if (!(await FlutterForegroundTask.isRunningService)) {
       await FlutterForegroundTask.startService(
         notificationTitle: LocaleKeys.android_foreground_service_notification_title.tr,
         notificationText: LocaleKeys.android_foreground_service_notification_body.tr,
