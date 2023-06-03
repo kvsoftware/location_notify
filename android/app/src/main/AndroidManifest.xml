@@ -48,6 +48,6 @@
         <service android:name="com.pravera.flutter_foreground_task.service.ForegroundService" />
         <meta-data 
             android:name="com.google.android.geo.API_KEY"
-            android:value="Put your Google Map API key"/>
+            android:value="${googleMapsApiKey}"/>
     </application>
 </manifest>
