@@ -45,9 +45,9 @@ class NotifyDetailController extends BaseController {
   }
 
   _renderNotify(NotifyViewModel notify) {
-    this.markers([notify.toMarker()]);
-    this.circles([notify.toCircle()]);
-    this.notifyDetail(notify);
+    markers([notify.toMarker()]);
+    circles([notify.toCircle()]);
+    notifyDetail(notify);
     textEditingcontroller.text = notify.name;
     _googleMapController?.moveCamera(CameraUpdate.newLatLngZoom(LatLng(notify.latitude, notify.longitude), 16));
   }

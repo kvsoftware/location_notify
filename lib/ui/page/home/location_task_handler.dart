@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:isolate';
 
 import 'package:fl_location/fl_location.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:latlong2/latlong.dart';
@@ -34,6 +33,9 @@ class LocationTaskHandler extends TaskHandler {
     final getNotifiesUseCase = GetNotifiesUseCase(notifyRepository);
     final updateNotifyUseCase = UpdateNotifyUseCase(notifyRepository);
 
+    if (_streamSubscription != null) {
+      _streamSubscription!.cancel();
+    }
     _streamSubscription = FlLocation.getLocationStream().listen(
       (event) async {
         final notifies = await getNotifiesUseCase.invoke();
@@ -62,7 +64,7 @@ class LocationTaskHandler extends TaskHandler {
             );
             await updateNotifyUseCase.invoke(notifyEntity: newNotify);
             sendPort?.send(true);
-            _showAlertNotification("${notificationTitle} ${notify.name}", notificationBody);
+            _showAlertNotification("$notificationTitle ${notify.name}", notificationBody);
           }
         }
       },
@@ -76,7 +78,17 @@ class LocationTaskHandler extends TaskHandler {
 
   @override
   Future<void> onDestroy(DateTime timestamp, SendPort? sendPort) async {
-    // Do nothing
+    final dataModule = await $FloorDatabaseModule.databaseBuilder('app_database.db').build();
+    final notifyLocalDataSource = NotifyLocalDataSource(dataModule);
+    final notifyRepository = NotifyRepository(notifyLocalDataSource);
+    final getNotifiesUseCase = GetNotifiesUseCase(notifyRepository);
+    final notifies = await getNotifiesUseCase.invoke();
+    final enabledNotifies = notifies.where((element) => element.isEnabled).toList();
+
+    if (enabledNotifies.isEmpty) {
+      _streamSubscription?.cancel();
+      return;
+    }
   }
 
   @override

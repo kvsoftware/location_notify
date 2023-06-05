@@ -41,9 +41,9 @@ class HomeController extends BaseController {
     final notifyViewModels = notifyEntities.map((e) => e.toNotifyViewModel()).toList();
     notifies(notifyViewModels);
 
-    _stopTrackingLocation();
     final notifyViewModel = notifyViewModels.firstWhereOrNull((element) => element.isEnabled == true);
     if (notifyViewModel == null) {
+      _stopTrackingLocation();
       return;
     }
     _startTrackingLocation(notifyViewModel);
